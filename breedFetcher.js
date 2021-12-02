@@ -2,24 +2,20 @@ const request = require('request');
 let args = process.argv.splice(2, process.argv.length - 1);
 let breed = args[0];
 const catBreeds = {
-  URL: 'https://api.thecatapi.com/v1/images/search' + '?q=' + breed,
+  URL: 'https://api.thecatapi.com/v1/breeds/search',
   port: 443,
 };
 
-
-const printBreed = () => {
-  const newCat = catBreeds.URL;
-  console.log(newCat);
-};
-
-request(catBreeds.URL, (err, response, body) => {
+request(catBreeds.URL  + '?q=' + breed, (err, response, body) => {
   if (err) {
-    console.error(err);
-    return;
+    throw new Error('cat not found');
   } else {
     const data = JSON.parse(body);
-    console.log(data);
-    console.log(typeof data);
-    printBreed();
+    if (!data.length) {
+      console.log('breed information not found');
+    } else {
+      const data = JSON.parse(body);
+      console.log(data[0].description);
+    }
   }
 });
